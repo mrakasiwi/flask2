@@ -1,0 +1,171 @@
+{%include 'header.html'%}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Calculation</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item">Calculation</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        
+          <div class="col-lg-8">
+            <div class="card">
+              <div class="card-body">
+               <h5 class="card-title">Data Division</h5>
+          
+                <!-- Pie Chart -->
+                <div id="pieChart"></div>
+          
+                  <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                    new ApexCharts(document.querySelector("#pieChart"), {
+                    series: [{{ len(train2) }}, {{ len(testing) }}],
+                    chart: {
+                      height: 350,
+                      type: 'pie',
+                      toolbar: {
+                        show: true
+                      }
+                    },
+                    labels: ['Training Data', 'Testing Data']
+                      }).render();
+                    });
+                  </script>
+                  <!-- End Pie Chart -->
+
+              </div>
+            </div>
+          </div>
+
+            <!-- Right side columns -->
+            <div class="col-lg-4">
+
+              <!-- Training Card -->
+              <div class="card info-card sales-card">
+
+                <div class="card-body">
+                  <h5 class="card-title">Interval Training Data <span></span> </h5>
+
+                  <div class="d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-calendar"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h6>{{ list(data['Date'])[0] }} - {{ list(data['Date'])[len(train2)] }}</h6>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- End Training Card -->
+
+              <!-- Testing Card -->
+              <div class="col-xl">
+                  <div class="card info-card sales-card">
+        
+                    <div class="card-body">
+                      <h5 class="card-title">Interval Testing Data </h5>
+      
+                      <div class="d-flex align-items-center">
+                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i class="bi bi-calendar"></i>
+                        </div>
+                        <div class="ps-3">
+                          <h6>{{ date[0] }} - {{ date[-1] }} </h6>
+                        </div>
+                      </div>
+                    </div>
+  
+                  </div>
+                </div><!-- End Testing Card -->
+
+            </div><!-- End Right side columns -->
+
+      </div>
+    </section>
+
+    <!-- Reports -->
+                  
+    <div class="card">
+
+      <div class="card-body">
+        <h5 class="card-title">Prediction Vs Actual Price <span></span></h5>
+
+        <!-- Line Chart -->
+        <div id="reportsChart"></div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", () => {
+            new ApexCharts(document.querySelector("#reportsChart"), {
+              series: [{
+                name: 'Training',
+                data: {{ prediction|tojson }},
+              },
+              {
+                name: 'Testing',
+                data: {{ testing|tojson }},
+              }],
+              chart: {
+                height: 500,
+                type: 'area',
+                toolbar: {
+                  show: true
+                },
+              },
+              markers: {
+                size: 4
+              },
+              colors: ['#4154f1', '#2eca6a', '#ff771d'],
+              fill: {
+                type: "gradient",
+                gradient: {
+                  shadeIntensity: 1,
+                  opacityFrom: 0.3,
+                  opacityTo: 0.4,
+                  stops: [0, 90, 100]
+                }
+              },
+              dataLabels: {
+                enabled: false
+              },
+              stroke: {
+                curve: 'smooth',
+                width: 2
+              },
+              xaxis: {
+                type: 'datetime',
+                categories: {{ date|tojson }}
+              },
+              tooltip: {
+                x: {
+                  format: 'dd/MM/yy'
+                },
+              }
+            }).render();
+          });
+        </script>
+         <!-- End Line Chart -->
+
+      </div>
+  
+    </div> <!-- End Reports -->
+
+    <div class="card body">
+      <h5 class="alert alert-info alert-dismissible fade show">MAPE : {{ mape }} </h5>
+    </div>
+
+    <div class="card body" >
+      {{ model }}
+    </div>
+
+
+  </main><!-- End #main -->
+
+  {%include 'footer.html'%}

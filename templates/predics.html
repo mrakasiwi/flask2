@@ -1,0 +1,111 @@
+{% include 'header.html' %}
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Prediction Chart</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active">Prediction</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+
+    <section class="section">
+      <div class="row">
+
+        <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Price Chart</h5>
+
+              <!-- Area Chart -->
+              <div id="areaChart"></div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  const series = {
+                    "monthDataSeries1": {
+                      "prices": {{ predic }},
+                      "dates": {{ date|tojson }}
+                    }
+                  }
+                  new ApexCharts(document.querySelector("#areaChart"), {
+                    series: [{
+                      name: "BTC Price",
+                      data: series.monthDataSeries1.prices
+                    }],
+                    chart: {
+                      type: 'area',
+                      height: 350,
+                      zoom: {
+                        enabled: false
+                      }
+                    },
+                    dataLabels: {
+                      enabled: false
+                    },
+                    stroke: {
+                      curve: 'straight'
+                    },
+                    subtitle: {
+                      text: 'Price Movements',
+                      align: 'left'
+                    },
+                    labels: series.monthDataSeries1.dates,
+                    xaxis: {
+                      type: 'datetime',
+                    },
+                    yaxis: {
+                      opposite: true
+                    },
+                    legend: {
+                      horizontalAlign: 'left'
+                    }
+                  }).render();
+                });
+              </script>
+              <!-- End Area Chart -->
+
+            </div>
+          </div>
+        
+
+        <div class="col-12">
+          <div class="card recent-sales overflow-auto">
+            <div class="card">
+            <div class="card-body">
+                
+              <h5 class="card-title">Predicted Price </h5>
+
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <th scope="row">Date </th>
+                        {% for dp in range(0, len(predic)) %}
+                          <td scope="col">{{ date[dp] }}</th>
+                        {% endfor %}
+                        
+                      </tr>
+                      <tr>
+                        <th scope="row">Price </th>
+                        {% for dp in range(0, len(predic)) %}
+                          <td>{{ round(predic[dp],2) }}</td>
+                        {% endfor %}
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <h5></h5>
+              <h5 class="alert alert-info alert-dismissible fade show">MAPE : {{ mape }} </h5>
+            </div>
+          </div>
+        </div>
+      </div><!-- End Recent Sales -->
+    </div>
+  </section>
+
+  </main><!-- End #main -->
+
+  {% include 'footer.html' %}
